@@ -9,7 +9,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "userTable")
 @Data
 public class User {
 
@@ -28,6 +28,7 @@ public class User {
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "CPF must be in the format 000.000.000-00")
     private String cpf;
 
+    @NotNull
     private LocalDateTime birthdate;
 
     @Email(message = "This format is not accept")
