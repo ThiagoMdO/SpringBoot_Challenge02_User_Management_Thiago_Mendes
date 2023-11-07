@@ -34,4 +34,10 @@ public class ApiExceptionHandller {
         var problem = new Problem(ErrorCode.SYSTEM_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public final ResponseEntity<Object> handlerProductNotFound(UserAlreadyExistsException exception){
+        var problem = new Problem(exception.getErrorCode(), exception.getStatus());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
 }

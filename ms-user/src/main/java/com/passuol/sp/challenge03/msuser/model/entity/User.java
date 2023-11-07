@@ -1,5 +1,7 @@
 package com.passuol.sp.challenge03.msuser.model.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.passuol.sp.challenge03.msuser.config.LocalDateTimeSerializer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +31,7 @@ public class User {
     private String cpf;
 
     @NotNull
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime birthdate;
 
     @Email(message = "This format is not accept")
