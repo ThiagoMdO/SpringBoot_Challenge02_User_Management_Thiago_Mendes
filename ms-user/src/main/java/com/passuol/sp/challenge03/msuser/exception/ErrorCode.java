@@ -10,7 +10,9 @@ public enum ErrorCode {
 
     BAD_REQUEST("Invalid Data"),
 
-    CONFLICT("Conflict between the fields, it's already in using"),
+    CONFLICT_EMAIL("Conflict between the fields, this Email Address is already in using"),
+
+    CONFLICT_CPF("Conflict between the fields, this CPF number is already in using"),
 
     SYSTEM_ERROR("Unavailable Server");
 

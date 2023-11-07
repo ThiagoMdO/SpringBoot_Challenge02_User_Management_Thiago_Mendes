@@ -1,6 +1,7 @@
 package com.passuol.sp.challenge03.msuser.service;
 
-import com.passuol.sp.challenge03.msuser.exception.UserAlreadyExistsException;
+import com.passuol.sp.challenge03.msuser.exception.UserAlreadyCPFExistsException;
+import com.passuol.sp.challenge03.msuser.exception.UserAlreadyEmailExistsException;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.repository.UserRepository;
@@ -24,16 +25,21 @@ public class UserService {
 
         User userResponseEmail = repository.findByEmail(userDTO.getEmail());
         User userResponseCpf = repository.findByCpf(userDTO.getCpf());
-        if(userResponseEmail != null || userResponseCpf != null){
-            throw new UserAlreadyExistsException();
+
+        if(userResponseEmail != null){
+            throw new UserAlreadyEmailExistsException();
+        }
+        if(userResponseCpf != null){
+            throw new UserAlreadyCPFExistsException();
         }
 
         User newUser = userMapper.convertInUser(userDTO);
         User newUserResponse = repository.save(newUser);
-        return userDTOMapper.convertInUserDTO(newUserResponse);
 
+        return userDTOMapper.convertInUserDTO(newUserResponse);
     }
 
+    
 //    public UserDTO showUserWithExist(UserDTO userDTO){
 //
 //        User userResponse = repository.findByEmail(userDTO.getEmail());

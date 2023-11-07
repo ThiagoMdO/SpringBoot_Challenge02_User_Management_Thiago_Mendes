@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.io.Serial;
 
 @Getter
-public class UserAlreadyExistsException extends RuntimeException{
+public class UserAlreadyEmailExistsException extends RuntimeException{
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -15,9 +15,9 @@ public class UserAlreadyExistsException extends RuntimeException{
 
     private final HttpStatus status;
 
-    public UserAlreadyExistsException() {
-        super(ErrorCode.CONFLICT.name());
+    public UserAlreadyEmailExistsException() {
+        super(ErrorCode.CONFLICT_EMAIL.name());
         this.status = HttpStatus.CONFLICT;
-        this.errorCode = ErrorCode.CONFLICT;
+        this.errorCode = ErrorCode.CONFLICT_EMAIL;
     }
 }

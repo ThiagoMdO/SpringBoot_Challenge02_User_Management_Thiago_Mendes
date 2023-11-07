@@ -35,9 +35,15 @@ public class ApiExceptionHandller {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public final ResponseEntity<Object> handlerProductNotFound(UserAlreadyExistsException exception){
+    @ExceptionHandler(UserAlreadyEmailExistsException.class)
+    public final ResponseEntity<Object> handlerProductNotFound(UserAlreadyEmailExistsException exception){
         var problem = new Problem(exception.getErrorCode(), exception.getStatus());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(UserAlreadyCPFExistsException.class)
+    public final ResponseEntity<Object> handlerProductNotFound(UserAlreadyCPFExistsException exception){
+        var problem = new Problem(exception.getErrorCode(), exception.getStatus());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 }
