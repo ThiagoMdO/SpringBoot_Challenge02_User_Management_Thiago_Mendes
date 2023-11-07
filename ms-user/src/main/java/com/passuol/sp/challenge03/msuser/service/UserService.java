@@ -2,6 +2,7 @@ package com.passuol.sp.challenge03.msuser.service;
 
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyCPFExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyEmailExistsException;
+import com.passuol.sp.challenge03.msuser.exception.UserNotFoundException;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.repository.UserRepository;
@@ -9,6 +10,8 @@ import com.passuol.sp.challenge03.msuser.service.mapper.UserDTOMapper;
 import com.passuol.sp.challenge03.msuser.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,14 @@ public class UserService {
 
     private final UserDTOMapper userDTOMapper;
 
+
+    public UserDTO getUserById(Long id){
+
+        User user = repository.findById(id)
+        .orElseThrow(UserNotFoundException::new);
+
+        return userDTOMapper.convertInUserDTO(user);
+    }
 
     public UserDTO createNewUser(UserDTO userDTO){
 
@@ -39,7 +50,7 @@ public class UserService {
         return userDTOMapper.convertInUserDTO(newUserResponse);
     }
 
-    
+
 //    public UserDTO showUserWithExist(UserDTO userDTO){
 //
 //        User userResponse = repository.findByEmail(userDTO.getEmail());
