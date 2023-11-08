@@ -16,6 +16,11 @@ public class ApiExceptionHandller {
         var problem = new Problem(ErrorCode.NOT_FOUND, HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Object> handleNullPointerException(){
+        var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     private ResponseEntity<Object> handlerMethodArgumentNotValidException(EmptyResultDataAccessException ex){

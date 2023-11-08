@@ -11,8 +11,6 @@ import com.passuol.sp.challenge03.msuser.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -50,6 +48,26 @@ public class UserService {
         return userDTOMapper.convertInUserDTO(newUserResponse);
     }
 
+    public void updateUser(Long id, UserDTO userDTO){
+        User userRequest = repository.findById(id)
+        .orElseThrow(UserNotFoundException::new);
+
+        if(userDTO.getFirstName().isBlank()
+            || userDTO.getLastName().isBlank()
+            || userDTO.getCpf().isBlank()
+            || userDTO.getBirthdate().toString().isBlank()
+            || userDTO.getEmail().isBlank()){
+            throw new UserNotFoundException();
+        }else if(userDTO.getPassword() == null){
+            userRequest.setFirstName(userDTO.getFirstName());
+            userRequest.setLastName(userDTO.getLastName());
+            userRequest.setCpf(userDTO.getCpf());
+            userRequest.setBirthdate(userDTO.getBirthdate());
+            userRequest.setEmail(userDTO.getEmail());
+
+            repository.save(userRequest);
+        }
+    }
 
 //    public UserDTO showUserWithExist(UserDTO userDTO){
 //

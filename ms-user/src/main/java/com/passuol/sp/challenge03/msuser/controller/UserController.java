@@ -27,10 +27,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
+    @PutMapping("users/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO){
+        userService.updateUser(id, userDTO);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 //    @PostMapping("/login")
 //    public ResponseEntity<UserDTO> login(@RequestBody @Valid UserDTO userDTO){
 //        userService.showUserWithExist(userDTO);
 //        return ResponseEntity.status(HttpStatus.FOUND).build();
 //    }
 }
-

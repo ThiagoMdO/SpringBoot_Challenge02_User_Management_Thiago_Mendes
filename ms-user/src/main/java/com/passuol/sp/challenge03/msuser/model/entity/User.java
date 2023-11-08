@@ -28,16 +28,19 @@ public class User {
     private String lastName;
 
     @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "CPF must be in the format 000.000.000-00")
+    @NotBlank
     private String cpf;
 
     @NotNull
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime birthdate;
 
     @Email(message = "This format is not accept")
+    @NotBlank
     private String email;
 
-    @Min(6)
+    @Size(min = 6)
+    @NotBlank
     private String password;
 
     private Boolean active;
