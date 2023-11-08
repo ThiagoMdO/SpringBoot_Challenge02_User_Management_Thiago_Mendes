@@ -3,6 +3,7 @@ package com.passuol.sp.challenge03.msuser.exception;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,11 @@ public class ApiExceptionHandller {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public final ResponseEntity<Object> handleBadRequest() {
+        var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+    @ExceptionHandler(TransactionSystemException.class)
+    public final ResponseEntity<Object> handleTransactionSystemException() {
         var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
