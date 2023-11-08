@@ -11,6 +11,8 @@ import com.passuol.sp.challenge03.msuser.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -51,6 +53,16 @@ public class UserService {
     public void updateUser(Long id, UserDTO userDTO){
         User userRequest = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
+
+        User userResponseEmail = repository.findByEmail(userDTO.getEmail());
+        User userResponseCpf = repository.findByCpf(userDTO.getCpf());
+
+        if(userResponseEmail != null && !Objects.equals(userRequest.getEmail(), userResponseEmail.getEmail())){
+            throw new UserAlreadyEmailExistsException();
+        }
+        if(userResponseCpf != null && !Objects.equals(userRequest.getCpf(), userResponseCpf.getCpf())){
+            throw new UserAlreadyCPFExistsException();
+        }
 
         if(userDTO.getFirstName().isBlank()
             || userDTO.getLastName().isBlank()
