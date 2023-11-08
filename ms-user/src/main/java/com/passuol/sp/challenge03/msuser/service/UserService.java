@@ -81,6 +81,19 @@ public class UserService {
         }
     }
 
+    public void updateUserPassword(Long id, UserDTO password) {
+
+        User userRequest = repository.findById(id)
+        .orElseThrow(UserNotFoundException::new);
+
+        if(password.toString().isBlank())throw new NullPointerException();
+
+        userRequest.setPassword(password.getPassword());
+
+        repository.save(userRequest);
+
+    }
+
 //    public UserDTO showUserWithExist(UserDTO userDTO){
 //
 //        User userResponse = repository.findByEmail(userDTO.getEmail());

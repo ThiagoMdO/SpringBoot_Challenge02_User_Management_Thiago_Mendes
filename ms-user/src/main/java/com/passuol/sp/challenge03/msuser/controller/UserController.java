@@ -33,6 +33,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PutMapping("users/{id}/password")
+    public ResponseEntity<UserDTO> updatePassWord(@PathVariable Long id, @RequestBody UserDTO password){
+        userService.updateUserPassword(id, password);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 //    @PostMapping("/login")
 //    public ResponseEntity<UserDTO> login(@RequestBody @Valid UserDTO userDTO){
 //        userService.showUserWithExist(userDTO);

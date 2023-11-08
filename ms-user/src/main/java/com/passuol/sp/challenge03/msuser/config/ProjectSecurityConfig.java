@@ -14,12 +14,12 @@ public class ProjectSecurityConfig {
 
         http.authorizeHttpRequests((requests) -> requests
         .requestMatchers("/users").authenticated()
-        .requestMatchers("/v1/users", "/v1/login", "/v1/users/{id}").permitAll())
+        .requestMatchers("/v1/users", "/v1/login", "/v1/users/{id}", "/v1/users/{id}/password").permitAll())
         .formLogin(Customizer.withDefaults())
         .httpBasic(Customizer.withDefaults());
 
         // Configuração para desabilitar a proteção CSRF no endpoint /v1/user
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/v1/users", "/v1/login","/v1/users/{id}"));
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/v1/users", "/v1/login","/v1/users/{id}","/v1/users/{id}/password"));
 
         return http.build();
     }
