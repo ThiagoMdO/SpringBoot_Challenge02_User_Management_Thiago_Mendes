@@ -18,6 +18,7 @@ public class UserDTOMapper {
         convertUserInDTO.setEmail(user.getEmail());
         convertUserInDTO.setPassword(user.getPassword());
         convertUserInDTO.setActive(user.getActive());
+        convertUserInDTO.setRole(user.getRole());
 
         return convertUserInDTO;
     }

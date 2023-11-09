@@ -2,18 +2,21 @@ package com.passuol.sp.challenge03.msuser.model.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.passuol.sp.challenge03.msuser.config.LocalDateTimeSerializer;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.passuol.sp.challenge03.msuser.enuns.UserRole;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "userTable")
 @Data
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +47,51 @@ public class User {
     private String password;
 
     private Boolean active;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public User(){}
+    public User(Long id, String firstName, String lastName, String cpf, LocalDateTime birthdate, String email, String password, Boolean active){
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cpf = cpf;
+        this.birthdate = birthdate;
+        this.email = email;
+        this.password = password;
+        this.active = active;
+        this.role = UserRole.USER;
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+    }
+
+    @Override
+    public String getUsername() {
+        return cpf;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

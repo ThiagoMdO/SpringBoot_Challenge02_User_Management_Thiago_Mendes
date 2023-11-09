@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public User convertInUser(UserDTO userDTO){
+
         var convertDTOInUser = new User();
 
         convertDTOInUser.setId(userDTO.getId());
@@ -18,6 +19,7 @@ public class UserMapper {
         convertDTOInUser.setEmail(userDTO.getEmail());
         convertDTOInUser.setPassword(userDTO.getPassword());
         convertDTOInUser.setActive(userDTO.getActive());
+        convertDTOInUser.setRole(userDTO.getRole());
 
         return convertDTOInUser;
     }

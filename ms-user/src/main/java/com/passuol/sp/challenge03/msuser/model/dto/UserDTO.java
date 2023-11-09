@@ -1,5 +1,6 @@
 package com.passuol.sp.challenge03.msuser.model.dto;
 
+import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,8 @@ public class UserDTO {
     private String password;
 
     private Boolean active;
+
+    private UserRole role;
+
+
 }

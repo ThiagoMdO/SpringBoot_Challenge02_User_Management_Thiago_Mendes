@@ -6,18 +6,25 @@ import com.passuol.sp.challenge03.msuser.exception.UserNotFoundException;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.repository.UserRepository;
+import com.passuol.sp.challenge03.msuser.repository.UserRepositorySecurity;
 import com.passuol.sp.challenge03.msuser.service.mapper.UserDTOMapper;
 import com.passuol.sp.challenge03.msuser.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
+
+    private final UserRepositorySecurity repositorySecurity;
 
     private final UserMapper userMapper;
 
@@ -45,6 +52,10 @@ public class UserService {
         }
 
         User newUser = userMapper.convertInUser(userDTO);
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
+        newUser.setPassword(encryptedPassword);
+
         User newUserResponse = repository.save(newUser);
 
         return userDTOMapper.convertInUserDTO(newUserResponse);
@@ -70,7 +81,8 @@ public class UserService {
             || userDTO.getBirthdate().toString().isBlank()
             || userDTO.getEmail().isBlank()){
             throw new UserNotFoundException();
-        }else if(userDTO.getPassword() == null){
+        }
+        if(userDTO.getPassword() == null){
             userRequest.setFirstName(userDTO.getFirstName());
             userRequest.setLastName(userDTO.getLastName());
             userRequest.setCpf(userDTO.getCpf());
@@ -88,7 +100,9 @@ public class UserService {
 
         if(password.toString().isBlank())throw new NullPointerException();
 
-        userRequest.setPassword(password.getPassword());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password.toString());
+
+        userRequest.setPassword(encryptedPassword);
 
         repository.save(userRequest);
 
@@ -104,4 +118,9 @@ public class UserService {
 //
 //        return null;
 //    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return repositorySecurity.findByEmail(username);
+    }
 }
