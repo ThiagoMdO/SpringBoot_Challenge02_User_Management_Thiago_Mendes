@@ -5,12 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDTO {
+public class UserDTORequest {
 
     private Long id;
 
@@ -20,8 +20,8 @@ public class UserDTO {
 
     private String cpf;
 
-    //@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime birthdate;
+//    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate birthdate;
 
     private String email;
 
@@ -30,6 +30,5 @@ public class UserDTO {
     private Boolean active;
 
     private UserRole role;
-
 
 }

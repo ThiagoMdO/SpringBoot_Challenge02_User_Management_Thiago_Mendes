@@ -4,12 +4,14 @@ import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyCPFExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyEmailExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserNotFoundException;
-import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
+import com.passuol.sp.challenge03.msuser.model.dto.AuthenticationDTO;
+import com.passuol.sp.challenge03.msuser.model.dto.UserDTORequest;
+import com.passuol.sp.challenge03.msuser.model.dto.UserDTOResponse;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.repository.UserRepository;
 import com.passuol.sp.challenge03.msuser.repository.UserRepositorySecurity;
-import com.passuol.sp.challenge03.msuser.service.mapper.UserDTOMapper;
-import com.passuol.sp.challenge03.msuser.service.mapper.UserMapper;
+import com.passuol.sp.challenge03.msuser.service.mapper.UserDTORequestToUserMapper;
+import com.passuol.sp.challenge03.msuser.service.mapper.UserToUserDTOResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,23 +29,24 @@ public class UserService implements UserDetailsService {
 
     private final UserRepositorySecurity repositorySecurity;
 
-    private final UserMapper userMapper;
+    private final UserDTORequestToUserMapper userDTORequestToUserMapper;
 
-    private final UserDTOMapper userDTOMapper;
+    private final UserToUserDTOResponseMapper userToUserDTOResponseMapper;
 
 
-    public UserDTO getUserById(Long id){
+
+    public UserDTOResponse getUserById(Long id){
 
         User user = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
 
-        return userDTOMapper.convertInUserDTO(user);
+        return userToUserDTOResponseMapper.convertUserToUserDTOResponse(user);
     }
 
-    public UserDTO createNewUser(UserDTO userDTO){
+    public UserDTOResponse createNewUser(UserDTORequest userDTORequest){
 
-        User userResponseEmail = repository.findByEmail(userDTO.getEmail());
-        User userResponseCpf = repository.findByCpf(userDTO.getCpf());
+        User userResponseEmail = repository.findByEmail(userDTORequest.getEmail());
+        User userResponseCpf = repository.findByCpf(userDTORequest.getCpf());
 
         if(userResponseEmail != null){
             throw new UserAlreadyEmailExistsException();
@@ -52,24 +55,24 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyCPFExistsException();
         }
 
-        User newUser = userMapper.convertInUser(userDTO);
+        User newUser = userDTORequestToUserMapper.convertInUser(userDTORequest);
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(userDTORequest.getPassword());
         newUser.setPassword(encryptedPassword);
 
         newUser.setRole(UserRole.USER);
 
         User newUserResponse = repository.save(newUser);
 
-        return userDTOMapper.convertInUserDTO(newUserResponse);
+        return userToUserDTOResponseMapper.convertUserToUserDTOResponse(newUserResponse);
     }
 
-    public void updateUser(Long id, UserDTO userDTO){
+    public void updateUser(Long id, UserDTORequest userDTORequest){
         User userRequest = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
 
-        User userResponseEmail = repository.findByEmail(userDTO.getEmail());
-        User userResponseCpf = repository.findByCpf(userDTO.getCpf());
+        User userResponseEmail = repository.findByEmail(userDTORequest.getEmail());
+        User userResponseCpf = repository.findByCpf(userDTORequest.getCpf());
 
         if(userResponseEmail != null && !Objects.equals(userRequest.getEmail(), userResponseEmail.getEmail())){
             throw new UserAlreadyEmailExistsException();
@@ -78,25 +81,25 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyCPFExistsException();
         }
 
-        if(userDTO.getFirstName().isBlank()
-            || userDTO.getLastName().isBlank()
-            || userDTO.getCpf().isBlank()
-            || userDTO.getBirthdate().toString().isBlank()
-            || userDTO.getEmail().isBlank()){
+        if(userDTORequest.getFirstName().isBlank()
+            || userDTORequest.getLastName().isBlank()
+            || userDTORequest.getCpf().isBlank()
+            || userDTORequest.getBirthdate().toString().isBlank()
+            || userDTORequest.getEmail().isBlank()){
             throw new UserNotFoundException();
         }
-        if(userDTO.getPassword() == null){
-            userRequest.setFirstName(userDTO.getFirstName());
-            userRequest.setLastName(userDTO.getLastName());
-            userRequest.setCpf(userDTO.getCpf());
-            userRequest.setBirthdate(userDTO.getBirthdate());
-            userRequest.setEmail(userDTO.getEmail());
+        if(userDTORequest.getPassword() == null){
+            userRequest.setFirstName(userDTORequest.getFirstName());
+            userRequest.setLastName(userDTORequest.getLastName());
+            userRequest.setCpf(userDTORequest.getCpf());
+            userRequest.setBirthdate(userDTORequest.getBirthdate());
+            userRequest.setEmail(userDTORequest.getEmail());
 
             repository.save(userRequest);
         }
     }
 
-    public void updateUserPassword(Long id, UserDTO password) {
+    public void updateUserPassword(Long id, UserDTORequest password) {
 
         User userRequest = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
@@ -111,24 +114,14 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    public UserDTO showUserWithExist(AuthenticationDTO user){
-//
-//        User userResponse = repository.findByEmail(user.email());
-//
-//        if(userResponse != null){
-//            return userDTOMapper.convertInUserDTO(userResponse);
-//        }
-//
-//        var usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
-//
-//        var auth = authenticationManager.authenticate(usernamePassword);
-//
-//        var token = tokenService.generateToken((User) auth.getPrincipal());
-//
-//        //String emailResponse = String.valueOf();
-//
-//        return null;
-//    }
+    public void testUserIfExist(AuthenticationDTO user){
+
+        User userResponse = repository.findByEmail(user.email());
+
+        if(userResponse == null){
+            throw new UserNotFoundException();
+        }
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

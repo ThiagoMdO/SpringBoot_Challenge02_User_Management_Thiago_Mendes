@@ -1,7 +1,5 @@
 package com.passuol.sp.challenge03.msuser.model.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.passuol.sp.challenge03.msuser.config.LocalDateTimeSerializer;
 import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -10,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,8 +33,8 @@ public class User implements UserDetails {
     private String cpf;
 
     @NotNull
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime birthdate;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'12:00:00'Z'")
+    private LocalDate birthdate;
 
     @Email(message = "This format is not accept")
     @NotBlank
@@ -52,7 +50,7 @@ public class User implements UserDetails {
     private UserRole role;
 
     public User(){}
-    public User(Long id, String firstName, String lastName, String cpf, LocalDateTime birthdate, String email, String password, Boolean active){
+    public User(Long id, String firstName, String lastName, String cpf, LocalDate birthdate, String email, String password, Boolean active){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

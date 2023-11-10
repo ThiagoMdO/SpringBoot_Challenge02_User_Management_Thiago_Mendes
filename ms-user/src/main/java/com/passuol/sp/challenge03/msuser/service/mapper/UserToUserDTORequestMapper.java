@@ -1,14 +1,14 @@
 package com.passuol.sp.challenge03.msuser.service.mapper;
 
-import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
+import com.passuol.sp.challenge03.msuser.model.dto.UserDTORequest;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDTOMapper {
+public class UserToUserDTORequestMapper {
 
-    public UserDTO convertInUserDTO(User user){
-        var convertUserInDTO = new UserDTO();
+    public UserDTORequest convertInUserDTO(User user){
+        var convertUserInDTO = new UserDTORequest();
 
         convertUserInDTO.setId(user.getId());
         convertUserInDTO.setFirstName(user.getFirstName());

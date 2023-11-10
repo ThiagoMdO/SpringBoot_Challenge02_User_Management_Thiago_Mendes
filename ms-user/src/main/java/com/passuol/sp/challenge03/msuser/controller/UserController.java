@@ -2,8 +2,9 @@ package com.passuol.sp.challenge03.msuser.controller;
 
 import com.passuol.sp.challenge03.msuser.infra.security.TokenService;
 import com.passuol.sp.challenge03.msuser.model.dto.AuthenticationDTO;
-import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
-import com.passuol.sp.challenge03.msuser.model.dto.UserResponseDTO;
+import com.passuol.sp.challenge03.msuser.model.dto.UserDTORequest;
+import com.passuol.sp.challenge03.msuser.model.dto.UserDTOResponse;
+import com.passuol.sp.challenge03.msuser.model.dto.UserResponseTokenDTO;
 import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.service.UserService;
 import jakarta.validation.Valid;
@@ -23,34 +24,37 @@ public class UserController {
 
     private final TokenService tokenService;
 
+    private final AuthenticationManager authenticationManager;
+
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> find(@PathVariable("id") Long id){
-        UserDTO userDTO = userService.getUserById(id);
-        return ResponseEntity.ok().body(userDTO);
+    public ResponseEntity<UserDTOResponse> find(@PathVariable("id") Long id){
+        UserDTOResponse userDTORequest = userService.getUserById(id);
+        return ResponseEntity.ok().body(userDTORequest);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserDTO userDTO){
-        UserDTO newUser = userService.createNewUser(userDTO);
+    public ResponseEntity<UserDTOResponse> create(@RequestBody @Valid UserDTORequest userDTORequest){
+        UserDTOResponse newUser = userService.createNewUser(userDTORequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO){
-        userService.updateUser(id, userDTO);
+    public ResponseEntity<UserDTORequest> update(@PathVariable Long id, @RequestBody UserDTORequest userDTORequest){
+        userService.updateUser(id, userDTORequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/users/{id}/password")
-    public ResponseEntity<Void> updatePassWord(@PathVariable Long id, @RequestBody UserDTO password){
+    public ResponseEntity<Void> updatePassWord(@PathVariable Long id, @RequestBody UserDTORequest password){
         userService.updateUserPassword(id, password);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO user){
+
+        userService.testUserIfExist(user);
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
 
@@ -58,7 +62,7 @@ public class UserController {
 
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok(new UserResponseDTO(token));
+        return ResponseEntity.ok(new UserResponseTokenDTO(token));
     }
 
 //    @PostMapping("/login")
