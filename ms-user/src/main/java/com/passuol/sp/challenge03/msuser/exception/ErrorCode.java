@@ -14,6 +14,8 @@ public enum ErrorCode {
 
     CONFLICT_CPF("Conflict between the fields, this CPF number is already in using"),
 
+    FAIL_AUTHENTICATION("You don't have a valid account"),
+
     SYSTEM_ERROR("Unavailable Server");
 
     private final String message;

@@ -62,4 +62,9 @@ public class ApiExceptionHandller {
         var problem = new Problem(exception.getErrorCode(), exception.getStatus());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
+    @ExceptionHandler(UserDontHaveAuthenticationServiceException.class)
+    public final ResponseEntity<Object> handlerUserDontHaveAuthenticationServiceException(UserNotFoundException exception){
+        var problem = new Problem(exception.getErrorCode(), exception.getStatus());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
 }

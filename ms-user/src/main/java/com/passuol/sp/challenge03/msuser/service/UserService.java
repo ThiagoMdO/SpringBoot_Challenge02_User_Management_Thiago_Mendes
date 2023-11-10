@@ -1,5 +1,6 @@
 package com.passuol.sp.challenge03.msuser.service;
 
+import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyCPFExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyEmailExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserNotFoundException;
@@ -56,6 +57,8 @@ public class UserService implements UserDetailsService {
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
         newUser.setPassword(encryptedPassword);
 
+        newUser.setRole(UserRole.USER);
+
         User newUserResponse = repository.save(newUser);
 
         return userDTOMapper.convertInUserDTO(newUserResponse);
@@ -108,12 +111,20 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    public UserDTO showUserWithExist(UserDTO userDTO){
+//    public UserDTO showUserWithExist(AuthenticationDTO user){
 //
-//        User userResponse = repository.findByEmail(userDTO.getEmail());
+//        User userResponse = repository.findByEmail(user.email());
+//
 //        if(userResponse != null){
 //            return userDTOMapper.convertInUserDTO(userResponse);
 //        }
+//
+//        var usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
+//
+//        var auth = authenticationManager.authenticate(usernamePassword);
+//
+//        var token = tokenService.generateToken((User) auth.getPrincipal());
+//
 //        //String emailResponse = String.valueOf();
 //
 //        return null;

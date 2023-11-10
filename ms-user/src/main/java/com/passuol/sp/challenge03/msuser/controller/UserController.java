@@ -1,7 +1,10 @@
 package com.passuol.sp.challenge03.msuser.controller;
 
+import com.passuol.sp.challenge03.msuser.infra.security.TokenService;
 import com.passuol.sp.challenge03.msuser.model.dto.AuthenticationDTO;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTO;
+import com.passuol.sp.challenge03.msuser.model.dto.UserResponseDTO;
+import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    private final TokenService tokenService;
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> find(@PathVariable("id") Long id){
@@ -49,9 +54,11 @@ public class UserController {
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
 
-        var auth = authenticationManager.authenticate(usernamePassword);
+        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.ok().build();
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new UserResponseDTO(token));
     }
 
 //    @PostMapping("/login")
