@@ -46,7 +46,7 @@ public class UserDTORequest {
 
     private UserRole role;
 
-    public UserDTORequest(Long id, String firstName, String lastName, String cpf, String birthDate, String email, String password, boolean active) {
+    public UserDTORequest(Long id, String firstName, String lastName, String cpf, String birthDate, String email, String password, Boolean active) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,6 +55,13 @@ public class UserDTORequest {
         this.email = email;
         this.password = password;
         this.active = active;
+    }
+    public UserDTORequest(String firstName, String lastName, String cpf, String birthDate, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cpf = cpf;
+        this.birthdate = LocalDate.parse(birthDate);
+        this.email = email;
     }
 
     @Override

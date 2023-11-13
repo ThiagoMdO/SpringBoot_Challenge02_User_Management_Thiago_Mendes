@@ -63,7 +63,7 @@ public class User implements UserDetails {
         this.active = active;
         this.role = UserRole.USER;
     }
-    public User(Long id, String firstName, String lastName, String cpf, String birthDate, String email, String password, boolean active) {
+    public User(Long id, String firstName, String lastName, String cpf, String birthDate, String email, String password, Boolean active) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

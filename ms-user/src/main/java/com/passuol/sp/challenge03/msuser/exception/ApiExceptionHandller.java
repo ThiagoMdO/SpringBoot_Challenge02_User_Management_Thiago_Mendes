@@ -25,7 +25,7 @@ public class ApiExceptionHandller {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(){
+    public ResponseEntity<Object> handlleConstraintViolationException(){
         var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }

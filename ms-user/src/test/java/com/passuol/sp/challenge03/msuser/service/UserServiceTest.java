@@ -9,7 +9,6 @@ import com.passuol.sp.challenge03.msuser.model.entity.User;
 import com.passuol.sp.challenge03.msuser.repository.UserRepository;
 import com.passuol.sp.challenge03.msuser.service.mapper.UserDTORequestToUserMapper;
 import com.passuol.sp.challenge03.msuser.service.mapper.UserToUserDTOResponseMapper;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 class UserServiceTest {
 
     @InjectMocks
@@ -114,54 +113,106 @@ class UserServiceTest {
     }
     @Test
     void createUser_WithInvalidData_ThrowsBadRequestException() {
-        // Arrange
-        //User userInvalid = new User(1L, "", "", null,"1990-01-15", "", null, true);
+
         UserDTORequest userDTORequest = new UserDTORequest(1L, "", "", null,"1990-01-15", "", null, true);
 
         assertThatThrownBy(() -> userService.createNewUser(userDTORequest)).isInstanceOf(IllegalArgumentException.class);
 
-        //        UserDTOResponse userDTOResponseDB = new UserDTOResponse("", "", null,"", "");
-
-//        when(repository.save(userInvalid)).thenThrow(IllegalArgumentException.class);
-//        when(bCryptPasswordEncoder.encode(null)).thenThrow(NullPointerException.class);
-//
-//        //String encryptedPassword = new BCryptPasswordEncoder().encode(userDTORequest.getPassword());
-//
-//        //assertThrows(ConstraintViolationException.class, () -> userService.createNewUser(userDTORequest));
-//        assertThatThrownBy(() -> userService.createNewUser(userDTORequest)).isInstanceOf(IllegalArgumentException.class);
-//        // Act
-//        UserDTOResponse userDTOResponse = userService.createNewUser(userDTORequest);
-//
-//        // Assert
-//        //assertThat(userDTORequest.toString().isNotBlank().isNotNull();
-//        assertThat(userDTOResponse).isEqualTo(userDTOResponseDB);
     }
     @Test
-    void updateUser_WithValidData_ReturnsVoid() {
-        // Arrange
-        //User userInvalid = new User(1L, "", "", null,"1990-01-15", "", null, true);
-        UserDTORequest userDTORequest = new UserDTORequest(1L, "", "", null,"1990-01-15", "", null, true);
+    void updateUser_WithValidData_ReturnsUserResponseDTO() {
 
-        assertThatThrownBy(() -> userService.createNewUser(userDTORequest)).isInstanceOf(IllegalArgumentException.class);
+        User userRequest = new User(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", "password", true);
+        UserDTORequest userDTORequest = new UserDTORequest(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", null, true);
+        UserDTOResponse userDTOResponseDB = new UserDTOResponse("firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com");
 
-        //        UserDTOResponse userDTOResponseDB = new UserDTOResponse("", "", null,"", "");
+        when(repository.findById(userRequest.getId())).thenReturn(Optional.of(userRequest));
+        when(repository.findByEmail(anyString())).thenReturn(null);
+        when(repository.findByCpf(anyString())).thenReturn(null);
 
-//        when(repository.save(userInvalid)).thenThrow(IllegalArgumentException.class);
-//        when(bCryptPasswordEncoder.encode(null)).thenThrow(NullPointerException.class);
-//
-//        //String encryptedPassword = new BCryptPasswordEncoder().encode(userDTORequest.getPassword());
-//
-//        //assertThrows(ConstraintViolationException.class, () -> userService.createNewUser(userDTORequest));
-//        assertThatThrownBy(() -> userService.createNewUser(userDTORequest)).isInstanceOf(IllegalArgumentException.class);
-//        // Act
-//        UserDTOResponse userDTOResponse = userService.createNewUser(userDTORequest);
-//
-//        // Assert
-//        //assertThat(userDTORequest.toString().isNotBlank().isNotNull();
-//        assertThat(userDTOResponse).isEqualTo(userDTOResponseDB);
+        when(repository.save(userRequest)).thenReturn(userRequest);
+        when(userToUserDTOResponseMapper.convertUserToUserDTOResponse(userRequest)).thenReturn(userDTOResponseDB);
+
+        UserDTOResponse userDTOResponse = userService.updateUser(1L, userDTORequest);
+
+        assertThat(userDTOResponseDB).isEqualTo(userDTOResponse);
+
     }
 
+//    @Test
+//    void updateUser_WithExistingEmail_ThrowsUserAlreadyEmailExistsException() {
+//        // Arrange
+//        User userRequest = new User(1L, "firstName", "lastName", "123.456.721-31", "1990-01-15", "maria@example.com", "password", true);
+//        UserDTORequest userDTORequest = new UserDTORequest(1L, "firstName", "lastName", "123.456.721-31", "1990-01-15", "maria@example.com", "password", true);
+//
+//        when(repository.findById(userRequest.getId())).thenReturn(Optional.of(userRequest));
+//        when(repository.findByEmail(userDTORequest.getEmail())).thenReturn(userRequest);
+//
+//        // Act & Assert
+//        assertThrows(UserAlreadyEmailExistsException.class, () -> userService.updateUser(1L, userDTORequest));
+//    }
+    @Test
+    void updateUser_WithEmailExists_ThrowsUserAlreadyEmailExistsException() {
+        User userRequest = new User(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", "password", true);
+        User user2Response = new User(2L, "firstName", "lastName", "123.456.721-34","1990-01-15", "maria@example.com", "password", true);
 
+        // Arrange
+        UserDTORequest userDTORequest = new UserDTORequest(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", "password", true);
+        UserDTORequest userDTO2Request = new UserDTORequest(2L, "firstName", "lastName", "123.456.721-34","1990-01-15", "maria@example.com", "password", true);
+
+//        UserDTORequest user2DTORequest = new UserDTORequest("firstName", "lastName", "123.456.721-34","1990-01-15", "joao@example.com");
+
+        when(repository.findById(userRequest.getId())).thenReturn(Optional.of(userRequest));
+        when(repository.findByEmail(anyString())).thenReturn(user2Response);
+//        when(repository.findByCpf(user2Response.getCpf())).thenReturn(userRequest);
+
+        //UserDTOResponse userDTOResponse = userService.updateUser(userRequest.getId(), userDTORequest);
+
+
+//        assertThat(user2Response.getEmail()).isNotNull();
+//        assertThat(user2Response.getEmail()).isEqualTo(userRequest.getEmail());
+
+        assertThrows(UserAlreadyEmailExistsException.class, () ->  userService.updateUser(1L, userDTORequest));
+//        assertThrows(UserAlreadyEmailExistsException.class, () -> userService.updateUser(userRequest.getId(), userDTO2Request)/userResponseEmail != null && !Objects.equals(userRequest.getEmail(), userResponseEmail.getEmail()));
+//        assertThatThrownBy(() -> userService.updateUser(userRequest.getId(), userDTORequest)).isInstanceOf(UserAlreadyEmailExistsException.class);
+        // Configurar comportamento do mock para findByCpf retornar um usuário existente
+        //when(repository.findByEmail(user2Response.getEmail())).thenThrow(UserAlreadyEmailExistsException.class);
+        //assertThat(userDTOResponse.getEmail()).isEqualTo(user2Response.getEmail());
+        // Act e Assert
+        // Adicione mais asserções conforme necessário
+    }
+
+    @Test
+    void updateUser_WithCPFExists_ThrowsUserAlreadyCPFExistsException() {
+        // Arrange
+        UserDTORequest userDTORequest = new UserDTORequest(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", "password", true);
+
+        // Configurar comportamento do mock para findByCpf retornar um usuário existente
+        when(repository.findByCpf(anyString())).thenReturn(new User());
+
+        // Act e Assert
+        assertThrows(UserAlreadyCPFExistsException.class, () -> userService.updateUser(1L, userDTORequest));
+        // Adicione mais asserções conforme necessário
+    }
+    @Test
+    void updateUser_WithInvalidData_ThrowsBadRequest() {
+
+        User userRequest = new User(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", "password", true);
+        UserDTORequest userDTORequest = new UserDTORequest(1L, "firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com", null, true);
+        UserDTOResponse userDTOResponseDB = new UserDTOResponse("firstName", "lastName", "123.456.721-31","1990-01-15", "maria@example.com");
+
+        when(repository.findById(userRequest.getId())).thenReturn(Optional.of(userRequest));
+        when(repository.findByEmail(anyString())).thenReturn(null);
+        when(repository.findByCpf(anyString())).thenReturn(null);
+
+        when(repository.save(userRequest)).thenReturn(userRequest);
+        when(userToUserDTOResponseMapper.convertUserToUserDTOResponse(userRequest)).thenReturn(userDTOResponseDB);
+
+        UserDTOResponse userDTOResponse = userService.updateUser(1L, userDTORequest);
+
+        assertThat(userDTOResponseDB).isEqualTo(userDTOResponse);
+
+    }
 
 
 
