@@ -1,8 +1,10 @@
 package com.passuol.sp.challenge03.msuser.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +24,21 @@ public class ApiExceptionHandller {
         var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(){
+        var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(){
+        var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+//    @ExceptionHandler(DateTimeParseException.class)
+//    public ResponseEntity<Object> handleDateTimeParseException(){
+//        var problem = new Problem(ErrorCode.DATE_FORMAT_INCOMPATIBLE, HttpStatus.BAD_REQUEST);
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+//    }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     private ResponseEntity<Object> handlerMethodArgumentNotValidException(EmptyResultDataAccessException ex){
@@ -64,6 +81,11 @@ public class ApiExceptionHandller {
     }
     @ExceptionHandler(UserDontHaveAuthenticationServiceException.class)
     public final ResponseEntity<Object> handlerUserDontHaveAuthenticationServiceException(UserDontHaveAuthenticationServiceException exception){
+        var problem = new Problem(exception.getErrorCode(), exception.getStatus());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+    @ExceptionHandler(UserPasswordInvalid.class)
+    public final ResponseEntity<Object> handlerUserPasswordInvalid(UserPasswordInvalid exception){
         var problem = new Problem(exception.getErrorCode(), exception.getStatus());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }

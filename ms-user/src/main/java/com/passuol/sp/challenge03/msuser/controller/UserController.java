@@ -39,15 +39,15 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDTORequest> update(@PathVariable Long id, @RequestBody UserDTORequest userDTORequest){
-        userService.updateUser(id, userDTORequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<UserDTOResponse> update(@PathVariable Long id, @RequestBody UserDTORequest userDTORequest){
+        UserDTOResponse newUser = userService.updateUser(id, userDTORequest);
+        return ResponseEntity.status(HttpStatus.OK).body(newUser);
     }
 
     @PutMapping("/users/{id}/password")
-    public ResponseEntity<Void> updatePassWord(@PathVariable Long id, @RequestBody UserDTORequest password){
-        userService.updateUserPassword(id, password);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<UserDTOResponse> updatePassWord(@PathVariable Long id, @RequestBody UserDTORequest password){
+        UserDTOResponse newPassword = userService.updateUserPassword(id, password);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(newPassword);
     }
 
 

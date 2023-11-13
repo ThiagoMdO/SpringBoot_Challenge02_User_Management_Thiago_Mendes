@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserToUserDTORequestMapper {
 
-    public UserDTORequest convertInUserDTO(User user){
+    public UserDTORequest convertInUserDTORequest(User user){
         var convertUserInDTO = new UserDTORequest();
 
         convertUserInDTO.setId(user.getId());

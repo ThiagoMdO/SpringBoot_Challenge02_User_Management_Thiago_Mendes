@@ -4,6 +4,7 @@ import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyCPFExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserAlreadyEmailExistsException;
 import com.passuol.sp.challenge03.msuser.exception.UserNotFoundException;
+import com.passuol.sp.challenge03.msuser.exception.UserPasswordInvalid;
 import com.passuol.sp.challenge03.msuser.model.dto.AuthenticationDTO;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTORequest;
 import com.passuol.sp.challenge03.msuser.model.dto.UserDTOResponse;
@@ -34,7 +35,6 @@ public class UserService implements UserDetailsService {
     private final UserToUserDTOResponseMapper userToUserDTOResponseMapper;
 
 
-
     public UserDTOResponse getUserById(Long id){
 
         User user = repository.findById(id)
@@ -61,13 +61,15 @@ public class UserService implements UserDetailsService {
         newUser.setPassword(encryptedPassword);
 
         newUser.setRole(UserRole.USER);
+        newUser.setActive(true);
 
         User newUserResponse = repository.save(newUser);
 
         return userToUserDTOResponseMapper.convertUserToUserDTOResponse(newUserResponse);
     }
 
-    public void updateUser(Long id, UserDTORequest userDTORequest){
+    public UserDTOResponse updateUser(Long id, UserDTORequest userDTORequest){
+
         User userRequest = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
 
@@ -95,16 +97,18 @@ public class UserService implements UserDetailsService {
             userRequest.setBirthdate(userDTORequest.getBirthdate());
             userRequest.setEmail(userDTORequest.getEmail());
 
-            repository.save(userRequest);
+            User newUser = repository.save(userRequest);
+            return userToUserDTOResponseMapper.convertUserToUserDTOResponse(newUser);
         }
+        return null;
     }
 
-    public void updateUserPassword(Long id, UserDTORequest password) {
-
+    public UserDTOResponse updateUserPassword(Long id, UserDTORequest password) {
+        if(password.getPassword().isBlank() || password.getPassword().isEmpty()){
+            throw new UserPasswordInvalid();
+        }
         User userRequest = repository.findById(id)
         .orElseThrow(UserNotFoundException::new);
-
-        if(password.toString().isBlank())throw new NullPointerException();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(password.toString());
 
@@ -112,6 +116,7 @@ public class UserService implements UserDetailsService {
 
         repository.save(userRequest);
 
+        return null;
     }
 
     public void testUserIfExist(AuthenticationDTO user){

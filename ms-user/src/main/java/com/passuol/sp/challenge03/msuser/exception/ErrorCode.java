@@ -16,6 +16,10 @@ public enum ErrorCode {
 
     FAIL_AUTHENTICATION("You don't have a valid account"),
 
+    DATE_FORMAT_INCOMPATIBLE("This date format is not compatible"),
+
+    PASSWORD_INVALID("Please enter a valid password"),
+
     SYSTEM_ERROR("Unavailable Server");
 
     private final String message;

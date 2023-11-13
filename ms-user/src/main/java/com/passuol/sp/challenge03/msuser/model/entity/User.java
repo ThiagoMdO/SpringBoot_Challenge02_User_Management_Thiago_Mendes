@@ -4,6 +4,7 @@ import com.passuol.sp.challenge03.msuser.enuns.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,6 +43,7 @@ public class User implements UserDetails {
 
     @Size(min = 6)
     @NotBlank
+    @NotNull
     private String password;
 
     private Boolean active;
@@ -60,6 +62,16 @@ public class User implements UserDetails {
         this.password = password;
         this.active = active;
         this.role = UserRole.USER;
+    }
+    public User(Long id, String firstName, String lastName, String cpf, String birthDate, String email, String password, boolean active) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cpf = cpf;
+        this.birthdate = LocalDate.parse(birthDate);
+        this.email = email;
+        this.password = password;
+        this.active = active;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -91,5 +103,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        return EqualsBuilder.reflectionEquals(obj, this);
     }
 }
