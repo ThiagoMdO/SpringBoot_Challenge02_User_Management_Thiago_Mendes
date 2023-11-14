@@ -63,6 +63,9 @@ public class UserDTORequest {
         this.birthdate = LocalDate.parse(birthDate);
         this.email = email;
     }
+    public UserDTORequest(String password){
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object obj){

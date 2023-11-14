@@ -64,17 +64,4 @@ public class UserController {
 
         return ResponseEntity.ok(new UserResponseTokenDTO(token));
     }
-
-//    @PostMapping("/login")
-//    public ResponseEntity<Void> login(@RequestBody @Valid UserDTO userDTO) {
-//        Authentication authenticationRequest =
-//        UsernamePasswordAuthenticationToken.unauthenticated(userDTO.getFirstName(), userDTO.getPassword());
-//        Authentication authenticationResponse =
-//        this.authenticationManager.authenticate(authenticationRequest);
-//        return null;
-//    }
-//    public ResponseEntity<UserDTO> login(@RequestBody @Valid UserDTO userDTO){
-//        userService.showUserWithExist(userDTO);
-//        return ResponseEntity.status(HttpStatus.FOUND).build();
-//    }
 }

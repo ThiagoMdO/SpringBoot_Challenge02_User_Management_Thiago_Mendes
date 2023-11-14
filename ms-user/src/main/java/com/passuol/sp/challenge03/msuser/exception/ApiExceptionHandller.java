@@ -24,6 +24,11 @@ public class ApiExceptionHandller {
         var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException (){
+        var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handlleConstraintViolationException(){
         var problem = new Problem(ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);

@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService {
             || userDTORequest.getCpf().isBlank()
             || userDTORequest.getBirthdate().toString().isBlank()
             || userDTORequest.getEmail().isBlank()){
-            throw new UserNotFoundException();
+            throw new IllegalArgumentException();
         }
         if(userDTORequest.getPassword() == null){
             userRequest.setFirstName(userDTORequest.getFirstName());
@@ -98,6 +98,7 @@ public class UserService implements UserDetailsService {
             userRequest.setEmail(userDTORequest.getEmail());
 
             User newUser = repository.save(userRequest);
+
             return userToUserDTOResponseMapper.convertUserToUserDTOResponse(newUser);
         }
         return null;
@@ -116,7 +117,10 @@ public class UserService implements UserDetailsService {
 
         repository.save(userRequest);
 
-        return null;
+        UserDTOResponse response = new UserDTOResponse();
+        response.setMessage("Password updated successfully");
+
+        return response;
     }
 
     public void testUserIfExist(AuthenticationDTO user){

@@ -32,6 +32,9 @@ public class UserDTOResponse {
     private String email;
 
     @JsonIgnore
+    private String message;
+
+    @JsonIgnore
     private String password;
 
     @JsonIgnore
@@ -46,6 +49,9 @@ public class UserDTOResponse {
         this.cpf = cpf;
         this.birthdate = LocalDate.parse(birthDate);
         this.email = email;
+    }
+    public UserDTOResponse(String password){
+        this.password = password;
     }
 
     @Override
