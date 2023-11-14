@@ -18,6 +18,7 @@ Currently on the platform it is possible to register, log in, edit username, edi
 - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - [Spring Boot](https://start.spring.io/)
 - [MySQL](https://www.mysql.com/downloads/)
+- [Postman](https://www.postman.com/downloads/)
 
 Some information about the platform 
 - Spring Boot Security with JWT to generate access tokens for some endpoints such as getting some users, updating user or password, at the moment only users can access them
