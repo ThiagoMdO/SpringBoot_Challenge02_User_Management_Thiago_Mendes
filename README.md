@@ -61,6 +61,7 @@ Some information about the platform
 5 . So you can view the results in a database, instal MySQL in your machine, use door 3306, username=root and password=root, or change the properties file, as it was installed on your machine
 <br/>
 6 . To be able to use the available endpoints, it is recommended to download a collaboration platform for API development, such as Postman.
+<br/>
 7 . You can test API development on your platform, each endpoint addresses below:
  <br/>
   ```bash
